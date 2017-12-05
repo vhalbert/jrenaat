@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<vdb name="TestH2VDB" version="1">
+
+<property name="dsbOwner" value="teiidUser"/>
+<property name="dsbTeiidStatus" value="Active"/>
+<property name="dsbTeiidStatusMessage" value="The VDB is Active"/>
+
+<model name="views" type="VIRTUAL">
+<metadata type="DDL">
+<![CDATA[CREATE VIEW TestH2View (
+	ACCOUNT_ID integer,
+	SSN string,
+	STATUS string,
+	TYPE string,
+	DATEOPENED timestamp,
+	DATECLOSED timestamp,
+	PRIMARY KEY(ACCOUNT_ID)
+)
+AS
+SELECT ACCOUNT_ID, SSN, STATUS, TYPE, DATEOPENED, DATECLOSED FROM H2.ACCOUNT;
+]]>
+
+</metadata>
+</model>
+<model name="H2" type="PHYSICAL">
+<source name="h2" translator-name="h2" connection-jndi-name="java:/accounts-ds"/>
+<metadata type="DDL">
+<![CDATA[CREATE FOREIGN TABLE ACCOUNT (
+	ACCOUNT_ID integer NOT NULL OPTIONS ("NAMEINSOURCE" '"ACCOUNT_ID"', "NATIVE_TYPE" 'INTEGER'),
+	SSN string(10) OPTIONS ("NAMEINSOURCE" '"SSN"', "NATIVE_TYPE" 'CHAR'),
+	STATUS string(10) OPTIONS ("NAMEINSOURCE" '"STATUS"', "NATIVE_TYPE" 'CHAR'),
+	TYPE string(10) OPTIONS ("NAMEINSOURCE" '"TYPE"', "NATIVE_TYPE" 'CHAR'),
+	DATEOPENED timestamp OPTIONS ("NAMEINSOURCE" '"DATEOPENED"', "NATIVE_TYPE" 'TIMESTAMP'),
+	DATECLOSED timestamp OPTIONS ("NAMEINSOURCE" '"DATECLOSED"', "NATIVE_TYPE" 'TIMESTAMP')
+) OPTIONS ("UPDATABLE" 'TRUE', "NAMEINSOURCE" '"ACCOUNT"');
+]]>
+
+</metadata>
+</model>
+
+</vdb>
