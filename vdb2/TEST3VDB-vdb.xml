@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<vdb name="TEST3VDB" version="1">
+
+<property name="dsbOwner" value="teiidUser"/>
+<property name="dsbTeiidStatus" value="New"/>
+<property name="dsbTeiidStatusMessage" value="The VDB is local"/>
+
+<model name="views" type="VIRTUAL">
+<metadata type="DDL">
+<![CDATA[CREATE VIEW TEST3View (
+	ID integer,
+	SYMBOL string,
+	COMPANY_NAME string,
+	PRIMARY KEY(ID)
+)
+AS
+SELECT ID, SYMBOL, COMPANY_NAME FROM H2.PRODUCT;
+]]>
+
+</metadata>
+</model>
+<model name="H2" type="PHYSICAL">
+<source name="h2" translator-name="h2" connection-jndi-name="java:/accounts-ds"/>
+<metadata type="DDL">
+<![CDATA[CREATE FOREIGN TABLE PRODUCT (
+	ID integer NOT NULL OPTIONS ("NAMEINSOURCE" '"ID"', "NATIVE_TYPE" 'INTEGER'),
+	SYMBOL string(16) OPTIONS ("NAMEINSOURCE" '"SYMBOL"', "NATIVE_TYPE" 'VARCHAR'),
+	COMPANY_NAME string(256) OPTIONS ("NAMEINSOURCE" '"COMPANY_NAME"', "NATIVE_TYPE" 'VARCHAR')
+) OPTIONS ("UPDATABLE" 'TRUE', "NAMEINSOURCE" '"PRODUCT"');
+]]>
+
+</metadata>
+</model>
+<data-role name="DefaultReadOnlyDataRole" any-authenticated="true" allow-create-temporary-tables="false" grant-all="false">
+<description>The default read-only access data role.</description>
+<permission>
+<resource-name>views</resource-name>
+<allow-alter>false</allow-alter>
+<allow-create>false</allow-create>
+<allow-delete>false</allow-delete>
+<allow-execute>false</allow-execute>
+<allow-read>true</allow-read>
+<allow-update>false</allow-update>
+</permission>
+<permission>
+<resource-name>H2</resource-name>
+<allow-alter>false</allow-alter>
+<allow-create>false</allow-create>
+<allow-delete>false</allow-delete>
+<allow-execute>false</allow-execute>
+<allow-read>true</allow-read>
+<allow-update>false</allow-update>
+</permission>
+</data-role>
+
+</vdb>
